@@ -136,8 +136,11 @@ class FichaTecnicaMaterial(models.Model):
 # Señal: Creación automática de Ficha Técnica al crear un Material
 @receiver(post_save, sender=Material)
 def auto_crear_ficha_tecnica(sender, instance, created, **kwargs):
+    if getattr(instance, '_from_admin', False) or FichaTecnicaMaterial.objects.filter(material=instance).exists():
+        return
     if created:
         FichaTecnicaMaterial.objects.create(material=instance)
+
 
 
 # ============================================================

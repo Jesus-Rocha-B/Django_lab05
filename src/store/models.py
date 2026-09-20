@@ -328,7 +328,10 @@ def crear_o_actualizar_detalle_prenda(sender, instance, created, **kwargs):
     su registro complementario 1:1 en DetallePrenda con valores acordes
     a su categoría.
     """
+    if getattr(instance, '_from_admin', False) or DetallePrenda.objects.filter(prenda=instance).exists():
+        return
     if created:
+
         especificaciones = {
             'Polos': {
                 'composicion': '100% Algodón Peinado 24/1',

@@ -49,10 +49,12 @@ class LogisticsModelTests(TestCase):
         self.assertEqual(self.cat.materiales.count(), 1)
         self.assertEqual(self.cat.materiales.first(), self.material)
 
-    def test_cascade_delete(self):
-        # Al eliminar la categoría padre, el material hijo se elimina por CASCADE
-        self.cat.delete()
-        self.assertEqual(Material.objects.count(), 0)
+    def test_protect_delete(self):
+        from django.db.models import ProtectedError
+        # Al intentar eliminar la categoría con materiales asociados, debe lanzar ProtectedError
+        with self.assertRaises(ProtectedError):
+            self.cat.delete()
+
 
 
 class LogisticsFormTests(TestCase):
